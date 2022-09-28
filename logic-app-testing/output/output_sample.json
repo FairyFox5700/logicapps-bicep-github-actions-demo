@@ -1,0 +1,57 @@
+{
+  "header": {
+    "id": "df6284b4-1240-45e5-a794-1cf289999632",
+    "description": "Train trip Helsinki-Tampere-Helsinki",
+    "startDate": "2022-05-21",
+    "endDate": "2022-05-21",
+    "userId": "63adbb5f-e6a1-4435-ba11-021e4928c9af",
+    "firstName": "Sam",
+    "surname": "Shepard"
+  },
+  "lines": [
+    {
+      "lineNumber": "1",
+      "description": "Helsinki-Tampere",
+      "expenseType": "Train travel",
+      "startDate": "2022-05-21",
+      "startTime": "10:00",
+      "endDate": "2022-05-21",
+      "endTime": "11:50",
+      "amount": "49",
+      "currency": "EUR",
+      "attachments": [
+        [
+          {
+            "attachmentNumber": "1",
+            "description": "Train ticket as an image",
+            "fileName": "train_ticket.jpg",
+            "fileType": "image/jpeg",
+            "uri": "https://sk101attachments.blob.core.windows.net/files/df6284b4-1240-45e5-a794-1cf289999632/1/1/train_ticket.jpg?sv=2018-03-28&sr=b&sig=e%2FonwnLcZKF0aTSR42S%2BDv69YZVCd8h8g350goN%2BYc8%3D&se=2022-07-09T14%3A27%3A20Z&sp=r"
+          }
+        ]
+      ]
+    },
+    {
+      "lineNumber": "2",
+      "description": "Tampere-Helsinki",
+      "expenseType": "Train travel",
+      "startDate": "2022-05-21",
+      "startTime": "16:00",
+      "endDate": "2022-05-21",
+      "endTime": "17:50",
+      "amount": "49",
+      "currency": "EUR",
+      "attachments": [
+        [
+          {
+            "attachmentNumber": "1",
+            "description": "Train ticket as an image",
+            "fileName": "train_ticket.jpg",
+            "fileType": "image/jpeg",
+            "uri": "https://sk101attachments.blob.core.windows.net/files/df6284b4-1240-45e5-a794-1cf289999632/2/1/train_ticket.jpg?sv=2018-03-28&sr=b&sig=zQ7SOF4RoJcKwIiCcvqmHjRrgIGgMdVqRbTx%2BCeDhVE%3D&se=2022-07-09T14%3A27%3A21Z&sp=r"
+          }
+        ]
+      ]
+    }
+  ]
+}

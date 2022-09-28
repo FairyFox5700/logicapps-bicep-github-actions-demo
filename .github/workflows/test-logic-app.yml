@@ -1,0 +1,39 @@
+name: Test Logic App
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  # push:
+  #  branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP_NAME: samikomulainen-azuredemo2
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+          creds: ${{ secrets.AZURE_CREDENTIALS_LA }}
+
+      - name: Call Logic App and assert response
+        run: |
+          export CALLBACK_URL=$(az deployment group show -g ${{ env.RESOURCE_GROUP_NAME }} -n logicappdeploy --query "properties.outputs.logicAppGetUrl.value" --output tsv)
+          curl -k --header "Content-Type: application/json" -X POST -d @logic-app-testing/input/test_la.json "$CALLBACK_URL" | jq . | tee response.json
+          jq --sort-keys . response.json > response.json.sorted
+          jq --sort-keys . logic-app-testing/output/output_sample2.json > output_sample2.json.sorted
+          diff -I ".blob.core.windows.net/files/0e442f4f-5b37-49a2-b677-c1013c13e32f/1/1/receipt.jpg" response.json.sorted output_sample2.json.sorted
+

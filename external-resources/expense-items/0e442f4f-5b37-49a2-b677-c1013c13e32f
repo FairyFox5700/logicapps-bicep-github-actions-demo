@@ -1,0 +1,28 @@
+{
+  "header": {
+    "id": "0e442f4f-5b37-49a2-b677-c1013c13e32f",
+    "description": "Protective shield for a mobile phone",
+    "startDate": "2022-06-20",
+    "endDate": "2022-06-20",
+    "userId": "df03858b-0b02-454b-b847-d2dab7da967e"
+  },
+  "lines": [
+    {
+      "lineNumber": "1",
+      "description": "Protective shield expense",
+      "expenseType": "Mobile phone accessories",
+      "startDate": "2022-06-20",
+      "endDate": "2022-06-20",
+      "amount": "69",
+      "currency": "EUR",
+      "attachments": [
+        {
+          "attachmentNumber": "1",
+          "description": "Receipt",
+          "fileName": "receipt.jpg",
+          "fileType": "image/jpeg"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sqlServerConnection": {
+      "value": "sql-conn"
+    },
+    "azureBlobConnection": {
+      "value": "azureblob-conn"
+    },
+    "expenseReportLogicApp": {
+      "value": "combined-expensereport"
+    },
+    "integrationAccount": {
+      "value": "combined-expensereport-ia"
+    },
+    "externalAttachmentStorageName": {
+      "value": "myattachmentsigxpc2tf6zb"
+    },
+    "externalResourceGroupName": {
+      "value": "samikomulainen-azuredemo1"
+    },
+    "externalSqlServerAddress": {
+      "value": "myuserdbserver-igxpc2tf6zb7w.database.windows.net"
+    },
+    "externalSqlDatabaseName": {
+      "value": "myuserdb"
+    },
+    "externalExpenseReportsBaseURI": {
+      "value": "https://myexpensereportsigxpc2tf.blob.core.windows.net"
+    }
+  }
+}

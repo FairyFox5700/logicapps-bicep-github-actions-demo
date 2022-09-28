@@ -1,0 +1,49 @@
+{
+  "header": {
+    "id": "df6284b4-1240-45e5-a794-1cf289999632",
+    "description": "Train trip Helsinki-Tampere-Helsinki",
+    "startDate": "2022-05-21",
+    "endDate": "2022-05-21",
+    "userId": "63adbb5f-e6a1-4435-ba11-021e4928c9af"
+  },
+  "lines": [
+    {
+      "lineNumber": "1",
+      "description": "Helsinki-Tampere",
+      "expenseType": "Train travel",
+      "startDate": "2022-05-21",
+      "startTime": "10:00",
+      "endDate": "2022-05-21",
+      "endTime": "11:50",
+      "amount": "49",
+      "currency": "EUR",
+      "attachments": [
+        {
+          "attachmentNumber": "1",
+          "description": "Train ticket as an image",
+          "fileName": "train_ticket.jpg",
+          "fileType": "image/jpeg"
+        }
+      ]
+    },
+    {
+      "lineNumber": "2",
+      "description": "Tampere-Helsinki",
+      "expenseType": "Train travel",
+      "startDate": "2022-05-21",
+      "startTime": "16:00",
+      "endDate": "2022-05-21",
+      "endTime": "17:50",
+      "amount": "49",
+      "currency": "EUR",
+      "attachments": [
+        {
+          "attachmentNumber": "1",
+          "description": "Train ticket as an image",
+          "fileName": "train_ticket.jpg",
+          "fileType": "image/jpeg"
+        }
+      ]
+    }
+  ]
+}

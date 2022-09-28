@@ -1,0 +1,88 @@
+name: Deploy external resources
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  # push:
+  #  branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP_NAME: samikomulainen-azuredemo1  # Target resource group. Change this if needed.
+  TEMPLATE_PATH: external-resources/template.bicep
+  PARAMETERS_PATH: external-resources/parameters.json
+  DEPLOYMENT_MODE: Incremental    # 'Complete'/'Incremental'. Change this to 'Incremental' if you want to preserve existing resources in the target resource group
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS_EXT
+          creds: ${{ secrets.AZURE_CREDENTIALS_EXT }}
+
+      - name: Run Bicep linter
+        run: az bicep build -f ${{ env.TEMPLATE_PATH }}
+
+      - name: Deploy resources
+        run: |
+          echo "*** Set correct subscription ***"
+          az account set -s ${{ secrets.SUBSCRIPTION_ID }}
+          echo "*** Install Bicep ***"
+          az bicep install
+          echo "*** Validate Bicep file ***"
+          az deployment group validate -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
+            --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
+            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASS }}'
+          echo "*** Do deploy ***"
+          az deployment group create -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
+            --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
+            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASS }}'
+      - name: Set GitHub Actions environment variables
+        env:
+          # If you have changed the default value of expensereports_storage_name parameters in parameters.json file, please change this value to match it
+          DEFAULT_EXPENSE_STORAGE_NAME: myexpensereports
+          # If you have changed the default value of attachment_storage_name parameters in parameters.json file, please change this value to match it
+          DEFAULT_ATTACHEMENT_STORAGE_NAME: myattachments
+        run: |
+          echo "*** Get/set SQL server name ***"
+          export sqlservername=$(az resource list -g ${{ env.RESOURCE_GROUP_NAME }} --resource-type "Microsoft.Sql/servers" --query "[].name" --output tsv)
+          echo $sqlservername
+          echo "SQLSERVERNAME=$sqlservername" >> $GITHUB_ENV
+          echo "*** Get/set SQL DB name ***"
+          export sqldbname=$(az resource list -g ${{ env.RESOURCE_GROUP_NAME }} --resource-type "Microsoft.Sql/servers/databases" --query "[?managedBy == null].name " --output tsv)
+          # Print everything after slash(/) char
+          echo ${sqldbname##*/}
+          echo "SQLDBNAME=${sqldbname##*/}" >> $GITHUB_ENV
+          echo "*** Get/set expense report storage name ***"
+          export expense_storage=$(az resource list -g ${{ env.RESOURCE_GROUP_NAME }} --resource-type "Microsoft.Storage/storageAccounts" --query "[?starts_with(name, '${{ env.DEFAULT_EXPENSE_STORAGE_NAME }}')].name" --output tsv)
+          echo "EXPENSE_STORAGE=$expense_storage" >> $GITHUB_ENV
+          echo "*** Get/set attachment storage name ***"
+          export attachment_storage=$(az resource list -g ${{ env.RESOURCE_GROUP_NAME }} --resource-type "Microsoft.Storage/storageAccounts" --query "[?starts_with(name, '${{ env.DEFAULT_ATTACHEMENT_STORAGE_NAME }}')].name" --output tsv)
+          echo "ATTACHMENT_STORAGE=$attachment_storage" >> $GITHUB_ENV
+
+      - uses: azure/login@v1  # Azure login required to add a temporary firewall rule for Azure SQL Server
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_EXT }}
+      - name: Run SQL script
+        uses: azure/sql-action@v1.3
+        with:
+          connection-string: 'Server=${{ env.SQLSERVERNAME }}.database.windows.net; User ID=${{ secrets.SQL_USER }}; Password=${{ secrets.SQL_PASS }}; Initial Catalog=${{ env.SQLDBNAME }}'
+          sql-file: 'external-resources/database/create_data.sql'
+      - name: Copy expense items and attachments to storage
+        run: |
+          echo "*** Copy expense items ***"
+          az storage copy -s "external-resources/expense-items/*" -d "https://${{ env.EXPENSE_STORAGE }}.blob.core.windows.net/api"
+          echo "*** Copy attachments ***"
+          az storage copy -s "external-resources/attachments/*" -d "https://${{ env.ATTACHMENT_STORAGE }}.blob.core.windows.net/files" --recursive
