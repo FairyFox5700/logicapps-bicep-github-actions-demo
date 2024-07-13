@@ -86,7 +86,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Run SQL script
-        uses: azure/sql-action@v1.3
+        uses: azure/sql-action@v1.2
         with:
           connection-string: 'Server=${{ env.SQLSERVERNAME }}.database.windows.net; User ID=${{ secrets.SQL_USER }}; Password=${{ secrets.SQL_PASSWORD }}; Initial Catalog=${{ env.SQLDBNAME }}'
           sql-file: 'external-resources/database/create_data.sql'
