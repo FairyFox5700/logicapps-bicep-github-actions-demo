@@ -15,19 +15,19 @@
       "value": "combined-expensereport-ia"
     },
     "externalAttachmentStorageName": {
-      "value": "myattachmentsigxpc2tf6zb"
+      "value": "myattachmentstu2yr7dzwom"
     },
     "externalResourceGroupName": {
       "value": "myResourceGroup"
     },
     "externalSqlServerAddress": {
-      "value": "myuserdbserver-igxpc2tf6zb7w.database.windows.net"
+      "value": "myuserdbservert-u2yr7dzwomgwy.database.windows.net"
     },
     "externalSqlDatabaseName": {
-      "value": "myuserdb"
+      "value": "myuserdbt"
     },
     "externalExpenseReportsBaseURI": {
-      "value": "https://myexpensereportsigxpc2tf.blob.core.windows.net"
+      "value": "https://myexpensereportstu2yr7dz.blob.core.windows.net"
     }
   }
 }
