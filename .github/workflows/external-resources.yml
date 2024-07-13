@@ -35,6 +35,7 @@ jobs:
       - name: Run Bicep linter
         run: az bicep build -f ${{ env.TEMPLATE_PATH }}
 
+
       - name: Deploy resources
         run: |
           echo "*** Set correct subscription ***"
@@ -46,6 +47,7 @@ jobs:
           az deployment group create  -f external-resources/template.bicep -g ${{ env.RESOURCE_GROUP_NAME }} \
             --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
             -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASSWORD }}'
+            
       - name: Set GitHub Actions environment variables
         env:
           # If you have changed the default value of expensereports_storage_name parameters in parameters.json file, please change this value to match it
@@ -69,6 +71,17 @@ jobs:
           export attachment_storage=$(az resource list -g ${{ env.RESOURCE_GROUP_NAME }} --resource-type "Microsoft.Storage/storageAccounts" --query "[?starts_with(name, '${{ env.DEFAULT_ATTACHEMENT_STORAGE_NAME }}')].name" --output tsv)
           echo "ATTACHMENT_STORAGE=$attachment_storage" >> $GITHUB_ENV
 
+      - name: Add Firewall Rule
+        id: add_firewall_rule
+        run: |
+          CLIENT_IP=$(curl -s ifconfig.me)
+          az sql server firewall-rule create \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --server ${{ env.SQLSERVERNAME }} \
+            --name AllowMyIP \
+            --start-ip-address $CLIENT_IP \
+            --end-ip-address $CLIENT_IP
+            
       - uses: azure/login@v1  # Azure login required to add a temporary firewall rule for Azure SQL Server
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
