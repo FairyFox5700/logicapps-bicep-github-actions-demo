@@ -89,7 +89,7 @@ jobs:
         uses: azure/sql-action@v2.1.1
         with:
           connection-string: 'Server=${{ env.SQLSERVERNAME }}.database.windows.net; User ID=${{ secrets.SQL_USER }}; Password=${{ secrets.SQL_PASSWORD }}; Initial Catalog=${{ env.SQLDBNAME }}'
-          sql-file: 'external-resources/database/create_data.sql'
+          path: 'external-resources/database/create_data.sql'
       - name: Copy expense items and attachments to storage
         run: |
           echo "*** Copy expense items ***"
