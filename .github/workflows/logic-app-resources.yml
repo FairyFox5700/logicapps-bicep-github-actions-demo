@@ -17,7 +17,7 @@ on:
 
 # Define environment variables
 env:
-  RESOURCE_GROUP_NAME: samikomulainen-azuredemo2
+  RESOURCE_GROUP_NAME: myResourceGroup
   TEMPLATE_PATH: logic-app-resources/template.bicep
   PARAMETERS_PATH: logic-app-resources/parameters.json
   DEPLOYMENT_MODE: ${{ github.event.inputs.deployment_mode }}
@@ -39,7 +39,7 @@ jobs:
         uses: Azure/login@v1
         with:
           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS_LA
-          creds: ${{ secrets.AZURE_CREDENTIALS_LA }}
+          creds: ${{ secrets.AZURE_CREDENTIALS}}
 
       - name: Run Bicep linter
         run: az bicep build -f ${{ env.TEMPLATE_PATH }}
@@ -47,14 +47,14 @@ jobs:
       - name: Deploy resources
         run: |
           echo "*** Set correct subscription (in case your Azure account has more than one active subscriptions) ***"
-          az account set -s ${{ secrets.SUBSCRIPTION_ID }}
+          az account set -s ${{ secrets.AZURE_SUBSCRIPTION }}
           echo "*** Install Bicep ***"
           az bicep install
           echo "*** Validate Bicep file ***"
           az deployment group validate -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
             --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
-            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASS }}'
+            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASSWORD }}'
           echo "*** Do deploy ***"
           az deployment group create -n logicappdeploy -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
             --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
-            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASS }}'
+            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASSWORD }}'
