@@ -10,7 +10,7 @@ param sqlPass string
 
 resource sqlserver 'Microsoft.Sql/servers@2021-11-01-preview' = {
   name: '${sqlserver_name}-${uniqueString(resourceGroup().id)}'
-  location: location
+  location: 'germanywestcentral'
   properties: {
     administratorLogin: sqlUser
     administratorLoginPassword: sqlPass
@@ -21,7 +21,7 @@ resource sqlserver 'Microsoft.Sql/servers@2021-11-01-preview' = {
 resource sqlserver_database 'Microsoft.Sql/servers/databases@2021-11-01-preview' = {
   parent: sqlserver
   name: sqlserver_database_name
-  location: location
+  location: 'germanywestcentral'
   sku: {
     name: 'Basic'
     tier: 'Basic'
@@ -42,7 +42,7 @@ var random_attachment_storage_name = substring('${attachment_storage_name}${uniq
 
 resource attachment_storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: random_attachment_storage_name
-  location: location
+  location: 'germanywestcentral'
   sku: {
     name: 'Standard_LRS'
   }
@@ -68,7 +68,7 @@ var random_expensereports_storage_name = substring('${expensereports_storage_nam
 
 resource expensereports_storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: random_expensereports_storage_name
-  location: location
+  location: 'germanywestcentral'
   sku: {
     name: 'Standard_LRS'
   }
