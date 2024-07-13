@@ -18,7 +18,7 @@
       "value": "myattachmentsigxpc2tf6zb"
     },
     "externalResourceGroupName": {
-      "value": "samikomulainen-azuredemo1"
+      "value": "myResourceGroup"
     },
     "externalSqlServerAddress": {
       "value": "myuserdbserver-igxpc2tf6zb7w.database.windows.net"
