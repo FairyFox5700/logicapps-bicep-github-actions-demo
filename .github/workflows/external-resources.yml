@@ -71,16 +71,6 @@ jobs:
           export attachment_storage=$(az resource list -g ${{ env.RESOURCE_GROUP_NAME }} --resource-type "Microsoft.Storage/storageAccounts" --query "[?starts_with(name, '${{ env.DEFAULT_ATTACHEMENT_STORAGE_NAME }}')].name" --output tsv)
           echo "ATTACHMENT_STORAGE=$attachment_storage" >> $GITHUB_ENV
 
-      - name: Add Firewall Rule
-        id: add_firewall_rule
-        run: |
-          CLIENT_IP=$(curl -s ifconfig.me)
-          az sql server firewall-rule create \
-            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
-            --server ${{ env.SQLSERVERNAME }} \
-            --name AllowMyIP \
-            --start-ip-address $CLIENT_IP \
-            --end-ip-address $CLIENT_IP
             
       - uses: azure/login@v1  # Azure login required to add a temporary firewall rule for Azure SQL Server
         with:
