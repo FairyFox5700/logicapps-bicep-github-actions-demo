@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  RESOURCE_GROUP_NAME: samikomulainen-azuredemo1  # Target resource group. Change this if needed.
+  RESOURCE_GROUP_NAME: demo-recipes-parsing  # Target resource group. Change this if needed.
   TEMPLATE_PATH: external-resources/template.bicep
   PARAMETERS_PATH: external-resources/parameters.json
   DEPLOYMENT_MODE: Incremental    # 'Complete'/'Incremental'. Change this to 'Incremental' if you want to preserve existing resources in the target resource group
