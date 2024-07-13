@@ -3,16 +3,16 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "sqlserver_name": {
-      "value": "myuserdbserver"
+      "value": "myuserdbservert"
     },
     "sqlserver_database_name": {
-      "value": "myuserdb"
+      "value": "myuserdbt"
     },
     "attachment_storage_name": {
-      "value": "myattachments"
+      "value": "myattachmentst"
     },
     "expensereports_storage_name": {
-      "value": "myexpensereports"
+      "value": "myexpensereportst"
     }
   }
 }
