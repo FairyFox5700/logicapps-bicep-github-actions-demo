@@ -43,7 +43,7 @@ jobs:
           az bicep install
           echo "*** Validate Bicep file ***"
           echo "*** Do deploy ***"
-          az deployment group create  --name myDeployment  -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
+          az deployment group create  -f external-resources/template.bicep -g ${{ env.RESOURCE_GROUP_NAME }} \
             --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
             -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASSWORD }}'
       - name: Set GitHub Actions environment variables
