@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  RESOURCE_GROUP_NAME: demo-recipes-parsing  # Target resource group. Change this if needed.
+  RESOURCE_GROUP_NAME: myResourceGroup  # Target resource group. Change this if needed.
   TEMPLATE_PATH: external-resources/template.bicep
   PARAMETERS_PATH: external-resources/parameters.json
   DEPLOYMENT_MODE: Incremental    # 'Complete'/'Incremental'. Change this to 'Incremental' if you want to preserve existing resources in the target resource group
@@ -30,7 +30,7 @@ jobs:
         uses: Azure/login@v1
         with:
           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS_EXT
-          creds: ${{ secrets.AZURE_CREDENTIALS_EXT }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Run Bicep linter
         run: az bicep build -f ${{ env.TEMPLATE_PATH }}
@@ -38,17 +38,17 @@ jobs:
       - name: Deploy resources
         run: |
           echo "*** Set correct subscription ***"
-          az account set -s ${{ secrets.SUBSCRIPTION_ID }}
+          az account set -s ${{ secrets.AZURE_SUBSCRIPTION }}
           echo "*** Install Bicep ***"
           az bicep install
           echo "*** Validate Bicep file ***"
           az deployment group validate -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
             --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
-            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASS }}'
+            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASSWORD }}'
           echo "*** Do deploy ***"
           az deployment group create -f ${{ env.TEMPLATE_PATH }} -g ${{ env.RESOURCE_GROUP_NAME }} \
             --mode ${{ env.DEPLOYMENT_MODE }} -p ${{ env.PARAMETERS_PATH }} \
-            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASS }}'
+            -p sqlUser='${{ secrets.SQL_USER }}' sqlPass='${{ secrets.SQL_PASSWORD }}'
       - name: Set GitHub Actions environment variables
         env:
           # If you have changed the default value of expensereports_storage_name parameters in parameters.json file, please change this value to match it
@@ -74,11 +74,11 @@ jobs:
 
       - uses: azure/login@v1  # Azure login required to add a temporary firewall rule for Azure SQL Server
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_EXT }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Run SQL script
         uses: azure/sql-action@v1.3
         with:
-          connection-string: 'Server=${{ env.SQLSERVERNAME }}.database.windows.net; User ID=${{ secrets.SQL_USER }}; Password=${{ secrets.SQL_PASS }}; Initial Catalog=${{ env.SQLDBNAME }}'
+          connection-string: 'Server=${{ env.SQLSERVERNAME }}.database.windows.net; User ID=${{ secrets.SQL_USER }}; Password=${{ secrets.SQL_PASSWORD }}; Initial Catalog=${{ env.SQLDBNAME }}'
           sql-file: 'external-resources/database/create_data.sql'
       - name: Copy expense items and attachments to storage
         run: |
