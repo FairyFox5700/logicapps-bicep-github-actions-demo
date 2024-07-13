@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  RESOURCE_GROUP_NAME: samikomulainen-azuredemo2
+  RESOURCE_GROUP_NAME: myResourceGroup
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,7 +27,7 @@ jobs:
         uses: Azure/login@v1
         with:
           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-          creds: ${{ secrets.AZURE_CREDENTIALS_LA }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Call Logic App and assert response
         run: |
